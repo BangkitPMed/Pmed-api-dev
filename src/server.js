@@ -15,6 +15,10 @@ const AuthenticationValidator = require('./validator/authentication');
 const MailSender = require('./controllers/nodemailer/MailSender');
 const TokenManager = require('./tokenize/TokenManager');
 
+// Medicine
+const medicines = require('./api/medicines');
+const MedicineControllers = require('./controllers/postgres/MedicineControllers');
+
 // exception
 const ClientError = require('./exceptions/ClientError');
 
@@ -22,6 +26,7 @@ const init = async () => {
   const userControllers = new UserControllers();
   const mailSender = new MailSender();
   const authenticationControllers = new AuthenticationControllers();
+  const medicineControllers = new MedicineControllers();
 
   const server = Hapi.server({
     host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
@@ -66,7 +71,6 @@ const init = async () => {
       options: {
         controllers: userControllers,
         validator: UserValidator,
-
       },
     },
     {
@@ -76,6 +80,12 @@ const init = async () => {
         validator: AuthenticationValidator,
         mailSender,
         tokenManager: TokenManager,
+      },
+    },
+    {
+      plugin: medicines,
+      options: {
+        controllers: medicineControllers,
       },
     },
   ]);
