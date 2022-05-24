@@ -1,7 +1,7 @@
 # Pmed-api-dev
 ## Documentaion PMED API
 
-- Base url: https://pmed-dev.herokuapp.com
+- Base url: {{enter your link}}
 
 ------------------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully send otp to xxxx@gmail.com`                                                      |
+> | `200`         | `successfully send otp to xxxx@gmail.com`                                                      |
 > | `400`         | `it cause body not contain needed property or not meet data type`   |
 > | `500`         | `server error`                                                                     |
 
@@ -129,7 +129,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully verified email`                                     |
+> | `200`         | `successfully verified email`                                     |
 > | `400`         | `it cause body not contain needed property or not meet data type or otp expired`   |
 > | `500`         | `server error`                                                      |
 
@@ -228,7 +228,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully update the token`                                     |
+> | `200`         | `successfully update the token`                                     |
 > | `400`         | `it cause body not contain needed property or not meet data type`   |
 > | `404`         | `it because user has logged out`   |
 > | `500`         | `server error`                                                      |
@@ -278,7 +278,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully deleted refresh token`                                     |
+> | `200`         | `successfully deleted refresh token`                                     |
 > | `400`         | `it cause body not contain needed property or not meet data type`   |
 > | `404`         | `it because user has logged out`   |
 > | `500`         | `server error`                                                      |
@@ -326,7 +326,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully get all user information`                             |
+> | `200`         | `successfully get all user information`                             |
 > | `401`         | `not attach Barrer token in authorization`                          |
 > | `403`         | `accessToken expired`                                               |
 > | `500`         | `server error`                                                      |
@@ -364,10 +364,16 @@
 </details>
 
 
-#### Get all medicine
+#### Get all and search medicine
 
 <details>
- <summary><code>GET</code> <code><b>/medicines</b></code> <code>(retun all name and id medicine)</code></summary>
+ <summary><code>GET</code> <code><b>/medicines</b></code> <code>(retun all name and id medicine and search medicine if put query parameter)</code></summary>
+
+##### parameter
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | q      |  false | string   | search query  |
 
 ##### Body
 
@@ -377,7 +383,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully get all medicine`                                |
+> | `200`         | `successfully get all medicine`                                |
 > | `500`         | `server error`                                                      |
 
 ##### Example response
@@ -412,6 +418,7 @@
 <details>
  <summary><code>GET</code> <code><b>/medicines/{medicineId}</b></code> <code>(retun all medicine information)</code></summary>
 
+
 ##### Body
 
 > None
@@ -420,7 +427,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully get all medicine`                                |
+> | `200`         | `successfully get medicine details`                                |
 > | `404`         | `medicine id not found`                                |
 > | `500`         | `server error`                                                      |
 
@@ -455,6 +462,111 @@
   return request.json();
 ```
 </details>
+
+#### Post history search medicine
+
+<details>
+ <summary><code>POST</code> <code><b>/history</b></code> <code>(call this api if user already log in and if user scan photo and see details medicine)</code></summary>
+
+##### Authorization
+
+> Bearer Token
+
+##### Body
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | medicineId      |  true | string   | N/A  |
+
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully add history search`                             |
+> | `401`         | `not attach Barrer token in authorization`                          |
+> | `403`         | `accessToken expired`                                               |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully add history search",
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/history`, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          medicineId,
+        }),
+      });
+
+  return request.json();
+```
+</details>
+
+#### Get search history
+
+<details>
+ <summary><code>GET</code> <code><b>/history</b></code> <code>(retun all medicine search history)</code></summary>
+
+##### Authorization
+
+> Bearer Token
+
+##### Body
+
+> None
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `200`         | `successfully get search history`                             |
+> | `401`         | `not attach Barrer token in authorization`                          |
+> | `403`         | `accessToken expired`                                               |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully get user information",
+ "data": {
+     "history": [
+         {
+            "medicine_id": "medicine-123",
+            "name": "obat a",
+            "search_on": "2022-05-24T14:36:28.344Z"
+        },
+     ]
+ }
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/history`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        method: 'GET',
+      });
+
+  return request.json();
+```
+</details>
+
 
 
 ------------------------------------------------------------------------------------------
