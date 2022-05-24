@@ -261,4 +261,150 @@
   return request.json();
 ```
 </details>
+
+#### Log-out
+
+<details>
+ <summary><code>DELETE</code> <code><b>/auth</b></code> <code>(Log out)</code></summary>
+
+##### Body
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | refreshToken      |  true | string   | N/A  |
+
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully deleted refresh token`                                     |
+> | `400`         | `it cause body not contain needed property or not meet data type`   |
+> | `404`         | `it because user has logged out`   |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully deleted refresh token",
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/auth`, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+        body: JSON.stringify({
+          refreshToken
+        }),
+      });
+
+  return request.json();
+```
+</details>
+
+#### Get user profile information
+
+<details>
+ <summary><code>GET</code> <code><b>/profile</b></code> <code>(retun all information user)</code></summary>
+
+##### Authorization
+
+> Bearer Token
+
+##### Body
+
+> None
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully get all user information`                             |
+> | `401`         | `not attach Barrer token in authorization`                          |
+> | `403`         | `accessToken expired`                                               |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully get user information",
+ "data": {
+     "profile":{
+        "email": "user@gmail.com",
+        "username": "username",
+        "fullname": "My full name",
+        "gender": "male",
+        "age": "30",
+        "createdAt": "2022-05-24T14:36:28.344Z",
+    },
+ }
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/profile`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        method: 'GET',
+      });
+
+  return request.json();
+```
+</details>
+
+
+#### Get all medicine
+
+<details>
+ <summary><code>GET</code> <code><b>/medicines</b></code> <code>(retun all name and id medicine)</code></summary>
+
+##### Body
+
+> None
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully get all medicine`                                |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "data": {
+     "medicines": [
+         {
+             "id": "medicine-123",
+             "name": "obat abc"
+         },
+         ...
+     ],
+ }
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/medicines`, {
+        method: 'GET',
+      });
+
+  return request.json();
+```
+</details>
+
 ------------------------------------------------------------------------------------------
