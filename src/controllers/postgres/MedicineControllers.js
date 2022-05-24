@@ -6,12 +6,23 @@ class MedicineControllers {
     this._pool = new Pool();
   }
 
-  async getMedicines() {
+  async getMedicines(q) {
     const query = {
       text: 'SELECT id, name FROM medicines ORDER BY name',
     };
 
     const result = await this._pool.query(query);
+    if (q) {
+      return result.rows.filter((data) => {
+        const loweredCaseaMedicinename = (data.name || '-').toLowerCase();
+        const jammedMedicineName = loweredCaseaMedicinename.replace(/\s/g, '');
+
+        const loweredCaseQuery = q.toLowerCase();
+        const jammedQuery = loweredCaseQuery.replace(/\s/g, '');
+
+        return jammedMedicineName.indexOf(jammedQuery) !== -1;
+      });
+    }
 
     return result.rows;
   }
@@ -38,6 +49,41 @@ class MedicineControllers {
       interaksi: result.rows[0].interaction,
     };
     return data;
+  }
+
+  async verifyMedicineId(id) {
+    const query = {
+      text: 'SELECT id FROM medicines WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('obat tidak ditemukan');
+    }
+  }
+
+  async postHistorySearch(userId, medicineId) {
+    const query = {
+      text: 'INSERT INTO history VALUES ($1, $2)',
+      values: [userId, medicineId],
+    };
+
+    await this._pool.query(query);
+  }
+
+  async getHistoryMedicine(userId) {
+    const query = {
+      text: `SELECT h.medicine_id, m.name, h.search_on FROM history h
+      JOIN medicines m ON h.medicine_id = m.id
+      WHERE h.user_id = $1`,
+      values: [userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
   }
 }
 

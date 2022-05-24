@@ -18,6 +18,7 @@ const TokenManager = require('./tokenize/TokenManager');
 // Medicine
 const medicines = require('./api/medicines');
 const MedicineControllers = require('./controllers/postgres/MedicineControllers');
+const MedicineValidator = require('./validator/medicine');
 
 // exception
 const ClientError = require('./exceptions/ClientError');
@@ -86,6 +87,7 @@ const init = async () => {
       plugin: medicines,
       options: {
         controllers: medicineControllers,
+        validator: MedicineValidator,
       },
     },
   ]);
