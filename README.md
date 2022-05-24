@@ -82,9 +82,9 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully send otp to user`                                     |
+> | `201`         | `successfully send otp to xxxx@gmail.com`                                                      |
 > | `400`         | `it cause body not contain needed property or not meet data type`   |
-> | `500`         | `server error`                                                      |
+> | `500`         | `server error`                                                                     |
 
 ##### Example response
 ```JSON
@@ -110,7 +110,54 @@
 
   return request.json();
 ```
+</details>
 
+#### Verify otp
+
+<details>
+ <summary><code>POST</code> <code><b>/verifyotp</b></code> <code>(verify otp that has been sent via email. otp will expire in 5 minutes)</code></summary>
+
+##### Body
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | token      |  true | string   | you will get this token when you register and login if email not verified  |
+> | otp      |  true | number   | put otp from your email  |
+
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully send otp to user`                                     |
+> | `400`         | `it cause body not contain needed property or not meet data type or otp expired`   |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully verified email",
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/verifyotp`, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          token,
+          otp,
+        }),
+      });
+
+  return request.json();
+```
 </details>
 
 ------------------------------------------------------------------------------------------
