@@ -31,7 +31,6 @@ class UserHandler {
     const response = h.response({
       status: 'success',
       message: 'successfully registered user, please verify email to log in',
-      statusCode: 201,
       data: {
         userId: userData.id,
         token: hash,
