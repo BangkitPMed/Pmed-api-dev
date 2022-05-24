@@ -407,4 +407,54 @@
 ```
 </details>
 
+#### Get medicine details
+
+<details>
+ <summary><code>GET</code> <code><b>/medicines/{medicineId}</b></code> <code>(retun all medicine information)</code></summary>
+
+##### Body
+
+> None
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully get all medicine`                                |
+> | `404`         | `medicine id not found`                                |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "data": {
+     "medicines": [
+         {
+             "id": "medicine-123",
+             "nama": "obat abc",
+             "pengunaan": "....",
+             "cara_kerja": "............",
+             "efek_samping": "............",
+             "pemakaian_obat": "............",
+             "dosis": "............",
+             "interaksi": "............",
+         },
+     ],
+ }
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/medicines/medicine-123`, {
+        method: 'GET',
+      });
+
+  return request.json();
+```
+</details>
+
+
 ------------------------------------------------------------------------------------------
