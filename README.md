@@ -129,7 +129,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully send otp to user`                                     |
+> | `201`         | `successfully verified email`                                     |
 > | `400`         | `it cause body not contain needed property or not meet data type or otp expired`   |
 > | `500`         | `server error`                                                      |
 
@@ -160,4 +160,105 @@
 ```
 </details>
 
+#### Log-in
+
+<details>
+ <summary><code>POST</code> <code><b>/auth</b></code> <code>(login to your account to get accessToken and refreshToken)</code></summary>
+
+##### Body
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | email      |  true | string   | N/A  |
+> | password   |  true | string   | N/A  |
+
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `Successfully log-in`                                     |
+> | `400`         | `it cause body not contain needed property or not meet data type or your email not verified`   |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "Successfully log-in",
+ "data": {
+        "accessToken": "this token is used to access private api path and this token will be expired in 10 second",
+        "refreshToken": "this token is use to genereate new accessToken if accessToken expired",
+    },
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/auth`, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+  return request.json();
+```
+</details>
+
+#### Generate new accessToken
+
+<details>
+ <summary><code>PUT</code> <code><b>/auth</b></code> <code>(generate new accessToken for access restricted api)</code></summary>
+
+##### Body
+
+> | name      |  is required     | data type               | description                                                    |
+> |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
+> | refreshToken      |  true | string   | N/A  |
+
+
+##### Status code
+
+> | http code     |  description                                                        |
+> |---------------|---------------------------------------------------------------------|
+> | `201`         | `successfully update the token`                                     |
+> | `400`         | `it cause body not contain needed property or not meet data type`   |
+> | `404`         | `it because user has logged out`   |
+> | `500`         | `server error`                                                      |
+
+##### Example response
+```JSON
+{
+ "status": "success",
+ "message": "successfully update the token",
+ "data": {
+        "accessToken": "this token is used to access private api path and this token will be expired in 10 second",
+    },
+},
+```
+
+##### Example Fetch javasript
+
+```javascript
+  const request = await fetch(`${BASEURL}/auth`, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify({
+          refreshToken
+        }),
+      });
+
+  return request.json();
+```
+</details>
 ------------------------------------------------------------------------------------------
