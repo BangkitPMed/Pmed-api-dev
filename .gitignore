@@ -1,5 +1,7 @@
 node_modules
 package-lock.json
 .env
+.prod.env
 Keys/private.pem
 Keys/public.pem
+gcloud-command.txt
