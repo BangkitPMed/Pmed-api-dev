@@ -64,7 +64,8 @@ class MedicineHandler {
         }));
 
       return ({
-        ...data,
+        id: data.id,
+        name: data.name,
         startAt: data.start_at,
         endAt: data.end_at,
         reminderTime,

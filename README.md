@@ -477,9 +477,9 @@
 > | name      |  is required     | data type               | description                                                    |
 > |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
 > | startAt      |  true | string   | N/A  |
-  | endAt      |  true | string   | N/A  |
-  | reminderTime      |  false | array   | N/A  |
-  | time      |  true | string   | N/A  |
+> | endAt      |  true | string   | N/A  |
+> | reminderTime      |  false | array   | N/A  |
+> | time      |  true | string   | N/A  |
 
 
 ##### Status code
