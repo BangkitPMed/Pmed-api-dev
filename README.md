@@ -463,10 +463,10 @@
 ```
 </details>
 
-#### Post history search medicine
+#### Post reminder
 
 <details>
- <summary><code>POST</code> <code><b>/history</b></code> <code>(call this api if user already log in and if user scan photo and see details medicine)</code></summary>
+ <summary><code>POST</code> <code><b>/reminder/{medicineId}</b></code> <code>(this resticted path you need login to post reminder)</code></summary>
 
 ##### Authorization
 
@@ -476,37 +476,49 @@
 
 > | name      |  is required     | data type               | description                                                    |
 > |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
-> | medicineId      |  true | string   | N/A  |
+> | startAt      |  true | string   | N/A  |
+  | endAt      |  true | string   | N/A  |
+  | reminderTime      |  false | array   | N/A  |
+  | time      |  true | string   | N/A  |
 
 
 ##### Status code
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `201`         | `successfully add history search`                             |
+> | `201`         | `successfully add reminder`                             |
 > | `401`         | `not attach Barrer token in authorization`                          |
 > | `403`         | `accessToken expired`                                               |
+> | `404`         | `medicine id not found`                                |
 > | `500`         | `server error`                                                      |
 
 ##### Example response
 ```JSON
 {
  "status": "success",
- "message": "successfully add history search",
+ "message": "successfully add reminder",
 },
 ```
 
 ##### Example Fetch javasript
 
 ```javascript
-  const request = await fetch(`${BASEURL}/history`, {
+  const request = await fetch(`${BASEURL}/reminder/medicine-xxx`, {
         headers: {
-          Accept: 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
         method: 'POST',
         body: JSON.stringify({
-          medicineId,
+          startAt: "string date",
+          endAt: "string date",
+          reminderTime: [
+            {
+              time: "18.00",
+            },
+             {
+              time: "21.00",
+            }
+          ]
         }),
       });
 
@@ -514,10 +526,10 @@
 ```
 </details>
 
-#### Get search history
+#### Get all reminder
 
 <details>
- <summary><code>GET</code> <code><b>/history</b></code> <code>(retun all medicine search history)</code></summary>
+ <summary><code>GET</code> <code><b>/reminder</b></code> <code>(this resticted path you need login to get all history)</code></summary>
 
 ##### Authorization
 
@@ -531,7 +543,7 @@
 
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
-> | `200`         | `successfully get search history`                             |
+> | `200`         | `successfully get all reminder`                             |
 > | `401`         | `not attach Barrer token in authorization`                          |
 > | `403`         | `accessToken expired`                                               |
 > | `500`         | `server error`                                                      |
@@ -540,13 +552,19 @@
 ```JSON
 {
  "status": "success",
- "message": "successfully get user information",
+ "message": "successfully get all reminder",
  "data": {
-     "history": [
+     "reminder": [
          {
-            "medicine_id": "medicine-123",
+            "id": "reminder-123",
             "name": "obat a",
-            "search_on": "2022-05-24T14:36:28.344Z"
+            "startAt": "2022-05-24T14:36:28.344Z",
+            "endAt": "2022-05-24T14:36:28.344Z",
+            "reminderTime": [
+              {
+                "time": "18.00",
+              }
+            ]
         },
      ]
  }
@@ -556,7 +574,7 @@
 ##### Example Fetch javasript
 
 ```javascript
-  const request = await fetch(`${BASEURL}/history`, {
+  const request = await fetch(`${BASEURL}/reminder`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         },
