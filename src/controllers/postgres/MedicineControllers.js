@@ -1,5 +1,7 @@
+const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const InvariantError = require('../../exceptions/InvariantError');
 
 class MedicineControllers {
   constructor() {
@@ -64,20 +66,53 @@ class MedicineControllers {
     }
   }
 
-  async postHistorySearch(userId, medicineId) {
+  async postReminder(data) {
+    const {
+      userId, medicineId, startAt, endAt,
+    } = data;
+    const id = `reminder-${nanoid(10)}`;
+
     const query = {
-      text: 'INSERT INTO history VALUES ($1, $2)',
-      values: [userId, medicineId],
+      text: 'INSERT INTO reminder VALUES ($1, $2, $3, $4, $5) RETURNING id',
+      values: [id, userId, medicineId, startAt, endAt],
     };
 
-    await this._pool.query(query);
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new InvariantError('failed add reminder');
+    }
+
+    return result.rows[0];
   }
 
-  async getHistoryMedicine(userId) {
+  async postReminderTime(reminderId, userId, data) {
+    data.forEach(async (e) => {
+      const query = {
+        text: 'INSERT INTO reminder_time VALUES ($1, $2, $3)',
+        values: [reminderId, userId, e.time],
+      };
+
+      await this._pool.query(query);
+    });
+  }
+
+  async getAllReminder(userId) {
     const query = {
-      text: `SELECT h.medicine_id, m.name, h.search_on FROM history h
-      JOIN medicines m ON h.medicine_id = m.id
-      WHERE h.user_id = $1`,
+      text: `SELECT r.id, r.start_at, r.end_at, m.name FROM reminder r
+      JOIN medicines m ON r.medicine_id = m.id
+      WHERE r.user_id = $1`,
+      values: [userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
+  async getAllReminderTime(userId) {
+    const query = {
+      text: 'SELECT reminder_id, time FROM reminder_time WHERE user_id = $1',
       values: [userId],
     };
 

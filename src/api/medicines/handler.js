@@ -5,8 +5,8 @@ class MedicineHandler {
 
     this.getAllMedicine = this.getAllMedicine.bind(this);
     this.getMedicineById = this.getMedicineById.bind(this);
-    this.postHistoryMedicine = this.postHistoryMedicine.bind(this);
-    this.getHistoryMedicine = this.getHistoryMedicine.bind(this);
+    this.postReminderMedicineHandler = this.postReminderMedicineHandler.bind(this);
+    this.getAllReminderByUserId = this.getAllReminderByUserId.bind(this);
   }
 
   async getAllMedicine(request) {
@@ -32,30 +32,49 @@ class MedicineHandler {
     };
   }
 
-  async postHistoryMedicine(request) {
-    this._validator.validateHistoryMedicine(request.payload);
+  async postReminderMedicineHandler(request) {
+    this._validator.validateReminder(request.payload);
 
-    const { medicineId } = request.payload;
+    const { startAt, endAt, reminderTime } = request.payload;
+    const { medicineId } = request.params;
     const { id } = request.auth.credentials;
 
-    await this._controllers.verifyMedicineId(medicineId);
-    await this._controllers.postHistorySearch(id, medicineId);
+    const payload = {
+      userId: id, medicineId, startAt, endAt,
+    };
+    const { id: reminderId } = await this._controllers.postReminder(payload);
+
+    await this._controllers.postReminderTime(reminderId, id, reminderTime);
 
     return {
       status: 'success',
-      message: 'successfully add history search',
+      message: 'successfuly added reminder',
     };
   }
 
-  async getHistoryMedicine(request) {
+  async getAllReminderByUserId(request) {
     const { id } = request.auth.credentials;
 
-    const history = await this._controllers.getHistoryMedicine(id);
+    const getReminder = await this._controllers.getAllReminder(id);
+    const getReminderTime = await this._controllers.getAllReminderTime(id);
+    const reminder = getReminder.map((data) => {
+      const reminderTime = getReminderTime.filter((time) => time.reminder_id === data.id)
+        .map((d) => ({
+          time: d.time,
+        }));
+
+      return ({
+        ...data,
+        startAt: data.start_at,
+        endAt: data.end_at,
+        reminderTime,
+      });
+    });
 
     return {
-      status: 'success',
+      status: 'sucees',
       data: {
-        history,
+        reminder,
       },
     };
   }

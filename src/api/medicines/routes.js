@@ -11,16 +11,16 @@ const routes = (handler) => [
   },
   {
     method: 'POST',
-    path: '/history',
-    handler: handler.postHistoryMedicine,
+    path: '/reminder/{medicineId}',
+    handler: handler.postReminderMedicineHandler,
     options: {
       auth: 'pmed_jwt',
     },
   },
   {
     method: 'GET',
-    path: '/history',
-    handler: handler.getHistoryMedicine,
+    path: '/reminder',
+    handler: handler.getAllReminderByUserId,
     options: {
       auth: 'pmed_jwt',
     },
