@@ -34,6 +34,7 @@ class MedicineHandler {
 
   async postReminderMedicineHandler(request) {
     this._validator.validateReminder(request.payload);
+    await this._controllers.verifyMedicineId(request.params.medicineId);
 
     const { startAt, endAt, reminderTime } = request.payload;
     const { medicineId } = request.params;
