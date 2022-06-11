@@ -1,4 +1,8 @@
 # Pmed-api-dev
+## Description
+Pmed api created using [Hapi.js](https://hapi.dev/api/) framework, for database we use [PostgreSQL](https://www.postgresql.org/), for authorization we use [JWT](https://jwt.io/) and [nodemailer](https://nodemailer.com/) for sending otp via email.
+Pmed api have 11 path:
+1. [/register](https://github.com/Vikraam27/Pmed-api-dev/edit/main/README.md#register-user)
 ## SET UP PMED API PROJECT AND DEPLOY TO GOOGLE CLOUD
 
 - To deploy this api you need google cloud account
