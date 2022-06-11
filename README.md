@@ -2,7 +2,17 @@
 ## Description
 Pmed api created using [Hapi.js](https://hapi.dev/api/) framework, for database we use [PostgreSQL](https://www.postgresql.org/), for authorization we use [JWT](https://jwt.io/) and [nodemailer](https://nodemailer.com/) for sending otp via email.
 Pmed api have 11 path:
-1. [/register](#register-user)
+1. [/register](#register-user) (POST) (public): this path to register user.
+2. [/req-otp](#request-otp) (POST) (public): this path to request otp to verify your email and email not verified your not able to log in.
+3. [/verifyotp](#verify-otp) (POST) (public): this path to verify your otp and token.
+4. [/auth](#log-in) (POST) (public): this path to login and return access token (to access private api, token will expired in 10 second) and refresh token(to renew access token) .
+5. [/auth](#generate-new-accesstoken) (PUT) (private): this path to renew accessToken.
+6. [/auth](#log-out) (DELETE) (private): this path to register user.
+7. [/register](#register-user) (private): this path to register user.
+8. [/register](#register-user) (public): this path to register user.
+9. [/register](#register-user) (public): this path to register user.
+10. [/register](#register-user) (public): this path to register user.
+11. [/register](#register-user) (public): this path to register user.
 ## SET UP PMED API PROJECT AND DEPLOY TO GOOGLE CLOUD
 
 - To deploy this api you need google cloud account
