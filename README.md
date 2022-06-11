@@ -98,7 +98,7 @@
 > |-----------|-----------|-------------------------|-----------------------------------------------------------------------|
 > | username      |  true | string   | must be unique  |
 > | fullname      |  true | string   | N/A  |
-> | email         |  true | string   | must be unique  |
+> | email         |  true | string   | must be unique and make sure your email is not fake because to verify your accoun we will send otp to your email|
 > | age           |  true | number   | N/A  |
 > | gender        |  true | string   | N/A  |
 > | password      |  true | string   | N/A  |
@@ -109,7 +109,7 @@
 > | http code     |  description                                                        |
 > |---------------|---------------------------------------------------------------------|
 > | `201`         | `user successfully created`                                         |
-> | `400`         | `it cause body not contain needed property or not meet data type`   |
+> | `400`         | `it cause body not contain needed property, body not meet data type, email and username already taken`   |
 > | `500`         | `server error`                                                      |
 
 ##### Example response
@@ -119,7 +119,7 @@
  "message": "successfully registered user, please verify email to log in",
  "data": {
     "userId": "user-123",
-    "token": "ecrytped data",
+    "token": "ecrytped string data",
   },
 },
 ```
