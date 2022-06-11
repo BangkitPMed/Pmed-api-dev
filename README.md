@@ -1,4 +1,27 @@
 # Pmed-api-dev
+## SET UP PMED API PROJECT AND DEPLOY TO GOOGLE CLOUD
+
+- To deploy this api you need google cloud account
+------------------------------------------------------------------------------------------
+1. First open cloud shell to create vpc network pmed-vpc-web-server-prod
+
+   ```shell
+   gcloud compute networks create pmed-vpc-web-server-prod --subnet-mode=custom --mtu=1460 --bgp-routing-mode=regional
+   ```
+   ```shell
+   gcloud compute networks subnets create pmed-vpc-asia-southeast-2 --range=10.128.0.0/24 --stack-type=IPV4_ONLY --network=pmed-vpc-web-server-prod --region=asia-southeast2
+   ```
+2. create vm instance for web server api. make sure This vm does not have an external ip because we will ssh using an identity aware proxy.
+    ```shell
+     gcloud compute instances create pmed-web-server --zone=asia-southeast2-a --machine-type=e2-micro --network-interface=subnet=pmed-vpc-asia-southeast-  2,no-address --create-disk=auto-delete=yes,boot=yes,device-name=pmed-web-server,image=projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-20220530,mode=rw,size=10
+     ```
+3. Create firewall rules to allow ssh from iap(identity aware proxy) tcp 22.
+
+   ```shell
+   gcloud compute firewall-rules create allow-ssh-ingress-from-aip-pmed-web-server --direction=INGRESS --priority=1000 --network=pmed-vpc-web-server-prod --action=ALLOW --rules=tcp:22 --source-ranges=35.235.240.0/20
+   ```
+4. After create vpc , vm and set up firewall rules. go to to create postgresql instance.
+
 ## Documentaion PMED API
 
 - Base url: {{enter your link}}
