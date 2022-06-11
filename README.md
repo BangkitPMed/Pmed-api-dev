@@ -20,8 +20,67 @@
    ```shell
    gcloud compute firewall-rules create allow-ssh-ingress-from-aip-pmed-web-server --direction=INGRESS --priority=1000 --network=pmed-vpc-web-server-prod --action=ALLOW --rules=tcp:22 --source-ranges=35.235.240.0/20
    ```
-4. After create vpc , vm and set up firewall rules. go to to create postgresql instance.
+4. Go to vpc network page and in left side click ip addresses to attach external ip to instance so vm can access public
+   1. Click reserve external static address
+   2. fill all column
+   3. chose region asia-southeast2 (jakarta)
+   4. and in attach to chose pmed-web-server > click reserve
+5. After create vpc , vm and set up firewall rules. go to to create postgresql instance.
+   1. go to cloud sql page.
+   2. click create instance > click chose PostgreSql
+   3. fill all field
+   4. pick postgreSql 12 for database version
+   5. region: asia-southeast2(jakarta)
+   6. expand configuration option and expand machine type
+   7. for machine type choose shared core 1 vCPU, 0.614 GB because we don't need a big database instance yet.
+   8. and expand storage chose 10gb ssd.
+   9. go to vm instance in new tab, copy extenal ip vm pmed-web-server.
+   10. expand connection, fill the name and paste external ip pmed-web-server in network.
+   11. turn off backup and click create, wait until instance successfully created
+   12. go to sql instance detail and in left panel click databases.
+   13. click create database and fill the name database "pmed_db".
+   14. copy public ip address and save it we will use later.
+6. go to vm instance and click ssh
+7. install node.js and set up project
+   ```shell
+   curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   sudo npm install pm2 -g
+   git clone https://github.com/Vikraam27/Pmed-api-dev.git
+   cd auth-api
+   mkdir Keys
+   npm install
+   npm run generate-key
+   touch .env
+   vim .env
+8. set up env configuration
+   ```shell
+   # server configuration
+   HOST=0.0.0.0
+   PORT=5000
 
+   # node-postgres configuration
+   PGUSER=<user postgres>
+   PGHOST=<public ip address pogstres instance>
+   PGPASSWORD=<password database>
+   PGDATABASE=pmed_db
+   PGPORT=5432
+
+   # nodemailer SMTP authentication
+   MAIL_ADDRESS=<your email>
+   MAIL_PASSWORD=<create app password follow this https://support.google.com/accounts/answer/185833?hl=en>
+
+   # JWT token
+   ACCESS_TOKEN_KEY=<random secret character>
+   REFRESH_TOKEN_KEY=<random secret charater>
+   ACCESS_TOKEN_AGE=<access token age in second>
+   ```
+9. save .env file and run
+   ```shell
+   npm run migrate up
+   
+   pm2 start npm --name "pmed-api" -- run "start-prod"
+   ```
 ## Documentaion PMED API
 
 - Base url: {{enter your link}}
