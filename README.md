@@ -4,6 +4,7 @@ Pmed api created using [Hapi.js](https://hapi.dev/api/) framework, for database 
 Pmed api use [Nginx](https://www.nginx.com/) server to limit request access in path [/medicines](#get-all-and-search-medicine). limit access set in 10 request / second. Pmed api has also installed tls Certificate powered by [lets encrypt](https://letsencrypt.org/) and installed using [python3-certbot-nginx](https://packages.ubuntu.com/bionic/python3-certbot-nginx) package.
 - For setup pmed api in cloud environment [click here](#set-up-pmed-api-project-and-deploy-to-google-cloud)
 - For Documentation Api [click here](#documentaion-pmed-api)
+- For Postman Web API documentation [click here](https://documenter.getpostman.com/view/21132443/Uz5NjYto)
 - Architecture Cloud
 
 ![cloud-arcitecture](https://raw.githubusercontent.com/Vikraam27/Pmed-api-dev/main/.github/assets/pmed-gcloud-arcitecture.drawio%20(1).png)
@@ -86,12 +87,13 @@ Pmed api use [Nginx](https://www.nginx.com/) server to limit request access in p
 9. save .env file and run
    ```shell
    npm run migrate up
+   npm run insert-data
    
    pm2 start npm --name "pmed-api" -- run "start-prod"
    ```
 ## Documentaion PMED API
 
-- Base url: {{enter your link}}
+- Base url: https://wet-parrot-7.a276.dcdg.xyz
 
 ------------------------------------------------------------------------------------------
 

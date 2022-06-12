@@ -1,0 +1,825 @@
+{
+	"info": {
+		"_postman_id": "31b4ed69-51d8-4b71-85a7-1391347322ca",
+		"name": "PMed api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 201 value', () => {",
+									"   pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"});",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('successfully registered user, please verify email to log in');",
+									"    pm.expect(responseJson).to.ownProperty('data');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data should have userId and token property and not equal to empty', () => {",
+									"    const responseJson = pm.response.json();",
+									"    const { data } = responseJson;",
+									" ",
+									"    pm.expect(data).to.ownProperty('userId');",
+									"    pm.expect(data.userId).to.not.equals('');",
+									"",
+									"    pm.expect(data).to.ownProperty('token');",
+									"    pm.expect(data.token).to.not.equals('');",
+									" ",
+									"    pm.environment.set('token', data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$timestamp}}-{{username}}\",\n    \"fullname\": \"{{fullname}}\",\n    \"email\": \"{{email}}\",\n    \"age\": \"{{age}}\",\n    \"gender\": \"{{gender}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/register"
+					},
+					"response": []
+				},
+				{
+					"name": "GET user profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"});",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('successfully get user information');",
+									"    pm.expect(responseJson).to.ownProperty('data');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data should have userId and token property and not equal to empty', () => {",
+									"    const responseJson = pm.response.json();",
+									"    const { data } = responseJson;",
+									"",
+									"    pm.expect(data).to.ownProperty('profile');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									" ",
+									"    pm.expect(data.profile).to.ownProperty('username');",
+									"    pm.expect(data.profile.username).to.not.equals('');",
+									"",
+									"    pm.expect(data.profile).to.ownProperty('email');",
+									"    pm.expect(data.profile.email).to.not.equals('');",
+									"",
+									"    pm.expect(data.profile).to.ownProperty('fullname');",
+									"    pm.expect(data.profile.fullname).to.not.equals('');",
+									"    ",
+									"    pm.expect(data.profile).to.ownProperty('gender');",
+									"    pm.expect(data.profile.gender).to.not.equals('');",
+									"",
+									"    pm.expect(data.profile).to.ownProperty('age');",
+									"    pm.expect(data.profile.age).to.not.equals('');",
+									"",
+									"    pm.expect(data.profile).to.ownProperty('createdAt');",
+									"    pm.expect(data.profile.createdAt).to.not.equals('');",
+									" ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{accessToken}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/profile"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register user Budi",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"budi123\",\n    \"fullname\": \"Budiman\",\n    \"email\": \"Budi@gmail.com\",\n    \"age\": \"{{age}}\",\n    \"gender\": \"{{gender}}\",\n    \"password\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseUrl}}/register"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Request otp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"});",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"{{token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/req-otp"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify otp",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"});",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"otp\": 670169,\n    \"token\": \"{{token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/verifyotp"
+					},
+					"response": []
+				},
+				{
+					"name": "Login with unverified email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"}); ",
+									" ",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"}); ",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('please verify your email address');",
+									"    pm.expect(responseJson).to.ownProperty('data');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									" ",
+									"pm.test('response body data should have property token with correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    const { data } = responseJson;",
+									" ",
+									"    pm.expect(data).to.have.ownProperty('token');",
+									"    pm.expect(data.token).to.not.equals('');",
+									"    pm.expect(data.token).to.not.equals(null);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"budi@gmail.com\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/auth",
+						"description": "Should send token when email is not verified and token can use to request otp and verify otp"
+					},
+					"response": []
+				},
+				{
+					"name": "Login with wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 401 value', () => {",
+									"   pm.response.to.have.status(401);",
+									"}); ",
+									" ",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"}); ",
+									" ",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									" ",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('fail');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('Invalid password');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"badpassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/auth",
+						"description": "should be throw error with status code 400"
+					},
+					"response": []
+				},
+				{
+					"name": "Login with verified email and valid credential",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 201 value', () => {",
+									"   pm.response.to.have.status(201);",
+									"}); ",
+									" ",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"}); ",
+									" ",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('Successfully log-in');",
+									"    pm.expect(responseJson).to.ownProperty('data');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data should have property accessToken and refreshToken with correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    const { data } = responseJson;",
+									" ",
+									"    pm.expect(data).to.have.ownProperty('accessToken');",
+									"    pm.expect(data.accessToken).to.not.equals('');",
+									"    pm.expect(data.accessToken).to.not.equals(null);",
+									"    pm.expect(data).to.have.ownProperty('refreshToken');",
+									"    pm.expect(data.refreshToken).to.not.equals('');",
+									"    pm.expect(data.refreshToken).to.not.equals(null);",
+									"",
+									"    // set accessToken and refreshToken to environment variable",
+									"    pm.environment.set('accessToken', data.accessToken);",
+									"    pm.environment.set('refreshToken', data.refreshToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/auth",
+						"description": "should return accesstoken and refreshtoken"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Authentication with valid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"}); ",
+									" ",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"}); ",
+									" ",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									" ",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('successfully deleted refresh token');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/auth"
+					},
+					"response": []
+				},
+				{
+					"name": "Put authentication with valid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {",
+									"   pm.response.to.have.status(200);",
+									"}); ",
+									" ",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+									"}); ",
+									" ",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									" ",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									" ",
+									"    pm.expect(responseJson).to.ownProperty('status');",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson).to.ownProperty('message');",
+									"    pm.expect(responseJson.message).to.equals('successfully update the token');",
+									"    pm.expect(responseJson).to.ownProperty('data');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									" ",
+									"pm.test('response body data should have property accessToken and refreshToken with correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    const { data } = responseJson;",
+									" ",
+									"    pm.expect(data).to.have.ownProperty('accessToken');",
+									"    pm.expect(data.accessToken).to.not.equals('');",
+									"    pm.expect(data.accessToken).to.not.equals(null);",
+									"    pm.environment.set('accessToken', data.accessToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/auth"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "medicine",
+			"item": [
+				{
+					"name": "Get all medicine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should 200', () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type should application/json', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body shoud contains correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');",
+									"",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data should contains array medicines', () => {",
+									"    const { data } = pm.response.json();",
+									"",
+									"    pm.expect(data).to.haveOwnProperty('medicines');",
+									"    pm.expect(data.medicines).to.be.an('array');",
+									"    pm.environment.set('medicineId', data.medicines[0].id);",
+									"});",
+									"",
+									"pm.test('the array medicines should contain object with only 2 property (id, name)', () => {",
+									"    const { data: { medicines } } = pm.response.json();",
+									"",
+									"    medicines.forEach((medicine) => {",
+									"        pm.expect(Object.keys(medicine)).to.lengthOf(2);",
+									"",
+									"        pm.expect(medicine).to.haveOwnProperty('id');",
+									"        pm.expect(medicine).to.haveOwnProperty('name');",
+									"",
+									"        pm.expect(medicine.id).to.be.a('string');",
+									"        pm.expect(medicine.id).to.not.equals('');",
+									"        pm.expect(medicine.name).to.be.a('string');",
+									"        pm.expect(medicine.name).to.not.equals('');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/medicines"
+					},
+					"response": []
+				},
+				{
+					"name": "Search medicine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should 200', () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type should application/json', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body shoud contains correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');",
+									"",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data should contains array medicines', () => {",
+									"    const { data } = pm.response.json();",
+									"",
+									"    pm.expect(data).to.haveOwnProperty('medicines');",
+									"    pm.expect(data.medicines).to.be.an('array');",
+									"    pm.expect(data.medicines).lengthOf(1);",
+									"});",
+									"",
+									"pm.test('the array medicines should contain object with with valid property (id, name)', () => {",
+									"    const { data: { medicines } } = pm.response.json();",
+									"",
+									"    medicines.forEach((medicine) => {",
+									"        pm.expect(Object.keys(medicine)).to.lengthOf(2);",
+									"",
+									"        pm.expect(medicine).to.haveOwnProperty('id');",
+									"        pm.expect(medicine).to.haveOwnProperty('name');",
+									"",
+									"        pm.expect(medicine.id).to.be.a('string');",
+									"        pm.expect(medicine.name).to.be.a('string');",
+									"        pm.expect(medicine.name).to.equals('Paracetamol');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/medicines?q=paracetamol",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"medicines"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "paracetamol"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get medicine by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should 200', () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type should application/json', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body shoud contains correct value', () => {",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');",
+									"",
+									"    pm.expect(responseJson.status).to.equals('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body data shoud contains medicine object', () => {",
+									"    const { data } = pm.response.json();",
+									"",
+									"    pm.expect(data).to.haveOwnProperty('medicine');",
+									"    pm.expect(data.medicine).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('medicine object should contains correct value', () => {",
+									"    const { data: { medicine } } = pm.response.json();",
+									"",
+									"    pm.expect(medicine).to.haveOwnProperty('id');",
+									"    pm.expect(medicine).to.haveOwnProperty('nama');",
+									"    pm.expect(medicine).to.haveOwnProperty('pengunaan');",
+									"    pm.expect(medicine).to.haveOwnProperty('cara_kerja');",
+									"    pm.expect(medicine).to.haveOwnProperty('efek_samping');",
+									"    pm.expect(medicine).to.haveOwnProperty('pemakaian_obat');",
+									"    pm.expect(medicine).to.haveOwnProperty('dosis');",
+									"    pm.expect(medicine).to.haveOwnProperty('interaksi');",
+									"",
+									"    pm.expect(medicine.id).to.be.a('string');",
+									"    pm.expect(medicine.nama).to.be.a('string');",
+									"    pm.expect(medicine.pengunaan).to.be.a('string');",
+									"    pm.expect(medicine.cara_kerja).to.be.a('string');",
+									"    pm.expect(medicine.efek_samping).to.be.a('string');",
+									"    pm.expect(medicine.pemakaian_obat).to.be.a('string');",
+									"    pm.expect(medicine.dosis).to.be.a('string');",
+									"    pm.expect(medicine.interaksi).to.be.a('string');",
+									"",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/medicines/{{medicineId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "post reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{accessToken}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startAt\": \"2022-06-12T11:30:14.374Z\",\n    \"endAt\": \"2022-13-12T11:30:14.374Z\",\n    \"reminderTime\": [\n        {\n            \"time\": \"08.00\"\n        },\n         {\n            \"time\": \"18.00\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/reminder/{{medicineId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all reminder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{accessToken}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/reminder"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

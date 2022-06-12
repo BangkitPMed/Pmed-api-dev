@@ -8,7 +8,8 @@
     "start-dev": "nodemon ./src/server.js",
     "lint": "eslint ./src",
     "migrate": "node-pg-migrate",
-    "generate-key": "node ./src/RSA_encryption/generateKeys.js"
+    "generate-key": "node ./src/RSA_encryption/generateKeys.js",
+    "insert-data": "node ./data/app.js"
   },
   "repository": {
     "type": "git",
